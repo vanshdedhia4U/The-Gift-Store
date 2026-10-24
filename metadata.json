@@ -1,0 +1,6 @@
+{
+  "name": "Anjrich The Toy Store | Ambernath's Premium Toy Destination",
+  "description": "Discover carefully selected toys, Hot Wheels collectibles, STEM kits, building sets, and birthday gifts at Anjrich The Toy Store in Ambernath, Maharashtra.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
