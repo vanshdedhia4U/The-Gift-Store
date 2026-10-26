@@ -2,8 +2,11 @@ export interface Product {
   id: string;
   name: string;
   category: string;
-  categorySlug: 'hot-wheels' | 'building-toys' | 'stem-learning' | 'rc-vehicles' | 'soft-toys' | 'board-games';
+  categorySlug: string;
   price: number;
+  originalPrice?: number;
+  rating?: number;
+  imageUrl: string;
   age: string;
   ageBracket: '0-2' | '3-5' | '6-8' | '9-12' | '13+';
   occasions: Array<'birthday' | 'return-gifts' | 'learning' | 'collector'>;
@@ -28,6 +31,46 @@ export interface Category {
   description: string;
   featuredItem: string;
 }
+
+export interface GiftBasket {
+  id: string;
+  title: string;
+  subtitle: string;
+  itemCount: number;
+  price: number;
+  imageUrl: string;
+  badge?: string;
+  description: string;
+  includedItems: string[];
+}
+
+export interface Article {
+  id: string;
+  title: string;
+  author: string;
+  date: string;
+  summary: string;
+  readTime: string;
+}
+
+export interface GalleryItem {
+  title: string;
+  category: string;
+  description: string;
+}
+
+export const SIDEBAR_CATEGORIES = [
+  { slug: 'all', name: 'All Toy Collections' },
+  { slug: 'hot-wheels', name: 'Hot Wheels & Die-Cast' },
+  { slug: 'building-toys', name: 'Building Bricks & Technic' },
+  { slug: 'stem-learning', name: 'STEM & Robotics' },
+  { slug: 'rc-vehicles', name: 'RC Supercars & Vehicles' },
+  { slug: 'soft-toys', name: 'Soft Toys & Nursery Plush' },
+  { slug: 'board-games', name: 'Family Board Games & Puzzles' },
+  { slug: 'craft-diy', name: 'Art, Craft & Jewelry DIY' },
+  { slug: 'montessori', name: 'Montessori & Wooden Activity' },
+  { slug: 'return-gifts', name: 'Birthday Return Gifts' },
+];
 
 export const CATEGORIES: Category[] = [
   {
@@ -74,46 +117,263 @@ export const CATEGORIES: Category[] = [
   },
 ];
 
+/* 8 Primary Featured Items directly reflecting the screenshot layout + rich showroom stock */
 export const PRODUCTS: Product[] = [
   {
-    id: 'anj-hw-01',
-    name: "Hot Wheels Premium Car Culture 'Real Riders' 5-Car Collector Set",
+    id: 'anj-snoopy-01',
+    name: 'Hallmark Stuffed Snoopy Cuddle Companion Plush',
+    category: 'Soft Toys & Nursery Plush',
+    categorySlug: 'soft-toys',
+    price: 899,
+    originalPrice: 1299,
+    rating: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?auto=format&fit=crop&w=600&q=85',
+    age: 'All Ages (0+)',
+    ageBracket: '0-2',
+    occasions: ['birthday', 'return-gifts'],
+    tag: 'Bestseller',
+    availability: 'Available in Showroom',
+    description: 'Ultra-soft, hypoallergenic plush dog with classic red collar and weighted bottom for upright shelf sitting.',
+    highlights: [
+      'Velveteen micro-fiber exterior with cloud-soft stuffing',
+      'Child-safe embroidered eyes and nose (IS 9873 compliant)',
+      'Machine washable gentle cycle',
+      'Includes complimentary Anjrich gift bag & tag',
+    ],
+    specs: {
+      material: '100% Organic Hypoallergenic Polyester Plush',
+      dimensions: '28cm height x 18cm width',
+      certification: 'BIS Certified (IS 9873 compliant)',
+      batteryRequired: 'No batteries required',
+      inBox: '1 Plush companion with commemorative story tag',
+    },
+    svgType: 'teddy',
+  },
+  {
+    id: 'anj-fig-02',
+    name: 'Throated Hummingbird & Wildlife Collector Figurine',
+    category: 'STEM & Robotics',
+    categorySlug: 'stem-learning',
+    price: 1120,
+    originalPrice: 1450,
+    rating: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=85',
+    age: 'Ages 4-12',
+    ageBracket: '6-8',
+    occasions: ['learning', 'collector'],
+    tag: 'Hand-Painted',
+    availability: 'Available in Showroom',
+    description: 'Museum-grade, hand-painted avian wildlife sculpture mounted on a natural textured floral branch for curious young nature lovers.',
+    highlights: [
+      'Authentic ornithological anatomy and feather details',
+      'Solid non-toxic eco-resin construction',
+      'Includes educational wildlife fact guide',
+      'Perfect desk companion and school biology display',
+    ],
+    specs: {
+      material: 'High-Density Non-Toxic Polymer Resin',
+      dimensions: '14cm x 10cm x 12cm',
+      certification: 'BIS Certified (IS 9873 compliant)',
+      batteryRequired: 'No batteries required',
+      inBox: '1 Hand-painted figurine, 1 Nature fact sheet',
+    },
+    svgType: 'robot',
+  },
+  {
+    id: 'anj-cal-03',
+    name: 'Montessori Perpetual Wooden Calendar & Learning Blocks',
+    category: 'Montessori & Wooden Activity',
+    categorySlug: 'montessori',
+    price: 920,
+    originalPrice: 1250,
+    rating: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?auto=format&fit=crop&w=600&q=85',
+    age: 'Ages 3-8',
+    ageBracket: '3-5',
+    occasions: ['birthday', 'learning'],
+    tag: 'Montessori',
+    availability: 'Available in Showroom',
+    description: 'Everlasting wooden desk calendar with illustrated date blocks, weekday cylinders, and season tiles for tactile daily routines.',
+    highlights: [
+      'Sustainably harvested smooth beechwood with rounded edges',
+      'Child-safe non-toxic water-based German dyes',
+      'Cultivates temporal awareness and number recognition',
+      'Heirloom quality build built to last generations',
+    ],
+    specs: {
+      material: 'Natural Beechwood & Water-Based Non-Toxic Paint',
+      dimensions: '16cm x 8cm x 11cm',
+      certification: 'BIS Certified (IS 9873 compliant)',
+      batteryRequired: 'No batteries required',
+      inBox: '1 Wooden cradle, 2 Date cubes, 3 Month bars',
+    },
+    svgType: 'boardGame',
+  },
+  {
+    id: 'anj-box-04',
+    name: 'The Fun Box 3D Geometric Brain Teaser & Secret Vault',
+    category: 'Family Board Games & Puzzles',
+    categorySlug: 'board-games',
+    price: 1480,
+    originalPrice: 1850,
+    rating: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&w=600&q=85',
+    age: 'Ages 8 to Adult',
+    ageBracket: '9-12',
+    occasions: ['birthday', 'collector'],
+    tag: 'Puzzle Master',
+    availability: 'Available in Showroom',
+    description: 'Intricate multi-step mechanical puzzle box. Decode sliding locks and hidden dovetail gears to unlock the secret inner chamber.',
+    highlights: [
+      'Precision laser-cut smooth birchwood mechanics',
+      '12 sequential sequential unlocking steps',
+      'Hidden inner compartment ideal for secret gifts',
+      'Includes coded hint booklet for newcomers',
+    ],
+    specs: {
+      material: 'Multi-Ply Natural Birchwood',
+      dimensions: '11cm x 11cm x 11cm',
+      certification: 'BIS Certified (IS 9873 compliant)',
+      batteryRequired: 'No batteries required',
+      inBox: '1 Secret puzzle box, 1 Sealed hint envelope',
+    },
+    svgType: 'magnet',
+  },
+  {
+    id: 'anj-craft-05',
+    name: 'Soleil Stretchy Ball Bead DIY Jewelry & Friendship Maker',
+    category: 'Art, Craft & Jewelry DIY',
+    categorySlug: 'craft-diy',
+    price: 630,
+    originalPrice: 1050,
+    rating: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1535295972055-1c762f4483e5?auto=format&fit=crop&w=600&q=85',
+    age: 'Ages 5-12',
+    ageBracket: '6-8',
+    occasions: ['birthday', 'return-gifts'],
+    tag: 'Creative Kit',
+    availability: 'Available in Showroom',
+    description: 'Colorful pastel DIY bead maker with 600+ pearl beads, elastic cords, charm pendants, and bead threading tool for creative designs.',
+    highlights: [
+      'Over 600 iridescent rainbow and metallic beads',
+      'Elastic cord spools that require zero knot-tying tools',
+      'Includes 12 gold-accented metal charms',
+      'Organized portable compartmentalized storage case',
+    ],
+    specs: {
+      material: 'BPA-Free Acrylic & Latex-Free Elastic Cord',
+      dimensions: '22cm x 15cm x 4cm (Case)',
+      certification: 'BIS Certified (IS 9873 compliant)',
+      batteryRequired: 'No batteries required',
+      inBox: '600+ Beads, 3 Spools elastic, 12 Charms, Sorting tray',
+    },
+    svgType: 'magnet',
+  },
+  {
+    id: 'anj-hw-06',
+    name: "Hot Wheels Premium Car Culture 'Real Riders' Die-Cast Supercar",
     category: 'Hot Wheels & Die-Cast',
     categorySlug: 'hot-wheels',
-    price: 2499,
+    price: 699,
+    originalPrice: 999,
+    rating: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?auto=format&fit=crop&w=600&q=85',
     age: 'Collectors & Ages 4+',
     ageBracket: '13+',
     occasions: ['birthday', 'collector'],
-    tag: 'Collector Series',
+    tag: 'Mattel Official',
     availability: 'Available in Showroom',
-    description: 'Official Mattel collector series featuring all-metal body and chassis, authentic automaker liveries, and Real Riders rubber tires.',
+    description: 'Authentic 1:64 scale Mattel collector die-cast car featuring metal body and metal base with Real Riders genuine rubber tires.',
     highlights: [
-      'Die-cast metal body and chassis',
-      'Real Riders premium rubber compound tires',
-      'Authentic automaker licensed graphics',
-      'Protective collector packaging',
+      'Heavy die-cast metal body and metal chassis',
+      'Real Riders treaded rubber compound tires',
+      'Authentic automaker licensed tampo graphics',
+      'Collector protective blister card packaging',
     ],
     specs: {
       material: 'Die-Cast Zinc Alloy & Rubber',
-      dimensions: '1:64 Scale (~7.5cm length per car)',
+      dimensions: '1:64 Scale (~7.5cm length)',
       certification: 'BIS Certified (IS 9873 compliant)',
       batteryRequired: 'No batteries required',
-      inBox: '5 Premium Die-Cast Vehicles',
+      inBox: '1 Premium Die-Cast Vehicle on Blister Card',
     },
     svgType: 'hotwheels',
   },
   {
-    id: 'anj-tech-02',
-    name: 'Technic Heavy-Duty Motorized Construction Crane (840 Pieces)',
-    category: 'Building Toys & Blocks',
+    id: 'anj-tray-07',
+    name: 'Rectangular Montessori Wooden Activity & Toy Display Tray',
+    category: 'Montessori & Wooden Activity',
+    categorySlug: 'montessori',
+    price: 1120,
+    originalPrice: 1620,
+    rating: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=600&q=85',
+    age: 'Ages 1-7',
+    ageBracket: '3-5',
+    occasions: ['learning'],
+    tag: 'Montessori',
+    availability: 'Available in Showroom',
+    description: 'Solid pine activity tray with smooth dual handles. Designed for sensory sorting, puzzle organization, and independent play setups.',
+    highlights: [
+      'Ergonomic cut-out handles designed for toddler hands',
+      'Raised 4cm spill-proof side borders',
+      'Sealed with natural beeswax child-safe coating',
+      'Versatile for kinetic sand, sorting beads, and building blocks',
+    ],
+    specs: {
+      material: 'Natural Solid Pinewood & Beeswax Seal',
+      dimensions: '35cm x 25cm x 4.5cm',
+      certification: 'BIS Certified (IS 9873 compliant)',
+      batteryRequired: 'No batteries required',
+      inBox: '1 Solid wood activity tray',
+    },
+    svgType: 'boardGame',
+  },
+  {
+    id: 'anj-pendant-08',
+    name: 'NICI Toucan Adventure Bag Charm & Collectible Keychain',
+    category: 'Soft Toys & Nursery Plush',
+    categorySlug: 'soft-toys',
+    price: 499,
+    originalPrice: 745,
+    rating: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1618842676088-c4d48a6a7c9d?auto=format&fit=crop&w=600&q=85',
+    age: 'Ages 3 to Adult',
+    ageBracket: '6-8',
+    occasions: ['return-gifts', 'birthday'],
+    tag: 'Pocket Toy',
+    availability: 'Available in Showroom',
+    description: 'German-designed plush toucan pendant with sturdy clip-ring. Attaches securely to school backpacks, pencil pouches, or keychains.',
+    highlights: [
+      'Vivid multicolored beak with plush fleece body',
+      'Anti-rust matte metallic carabiner keyring',
+      'Compact 10cm pocket-friendly companion',
+      'Popular birthday return gift pick',
+    ],
+    specs: {
+      material: 'Soft Velboa Polyester & Stainless Metal Ring',
+      dimensions: '10cm height x 6cm width',
+      certification: 'BIS Certified (IS 9873 compliant)',
+      batteryRequired: 'No batteries required',
+      inBox: '1 Plush character clip-pendant',
+    },
+    svgType: 'teddy',
+  },
+  {
+    id: 'anj-tech-09',
+    name: 'Technic Heavy-Duty Motorized Construction Crane (840 Pcs)',
+    category: 'Building Bricks & Technic',
     categorySlug: 'building-toys',
     price: 3799,
+    originalPrice: 4499,
+    rating: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?auto=format&fit=crop&w=600&q=85',
     age: 'Ages 8-14',
     ageBracket: '9-12',
     occasions: ['birthday', 'learning', 'collector'],
     tag: 'Engineering Kit',
     availability: 'Available in Showroom',
-    description: 'Challenging 840-piece mechanical build equipped with gear assemblies, rotating cab, extendable boom arm, and dual-action winch.',
+    description: 'Challenging mechanical build equipped with gear assemblies, rotating 360-degree cab, and dual-action cable winch.',
     highlights: [
       'Realistic gear transmission and pulley mechanics',
       'Working outrigger stabilizer legs',
@@ -123,261 +383,161 @@ export const PRODUCTS: Product[] = [
     specs: {
       material: 'Virgin High-Precision ABS Plastic',
       dimensions: '48cm x 22cm x 35cm (Assembled)',
-      certification: 'BIS Certified',
+      certification: 'BIS Certified (IS 9873 compliant)',
       batteryRequired: 'Optional 3x AA for motorized winch',
-      inBox: '840 Brick pieces, 1 Motor unit, Detailed instruction manual',
+      inBox: '840 Brick pieces, 1 Motor unit, Instruction manual',
     },
     svgType: 'crane',
   },
   {
-    id: 'anj-stem-03',
-    name: 'CuriousMinds 6-in-1 Solar & Hydraulic Robot Explorer Lab',
-    category: 'Educational & STEM',
-    categorySlug: 'stem-learning',
-    price: 1850,
-    age: 'Ages 7-12',
-    ageBracket: '6-8',
-    occasions: ['birthday', 'learning', 'return-gifts'],
-    tag: 'STEM Kit',
-    availability: 'Available in Showroom',
-    description: 'Discover physics and clean energy by assembling 6 different robotic rovers powered by water pressure and solar energy. No batteries required.',
-    highlights: [
-      'Powered entirely by sunlight & hydraulic water pistons',
-      'Rebuilds into 6 distinct robotic exploration forms',
-      'Encourages scientific problem-solving and mechanics',
-      'Zero soldering or dangerous chemical components',
-    ],
-    specs: {
-      material: 'BPA-Free Recyclable Polymer',
-      dimensions: 'Varies by build (~20cm height)',
-      certification: 'BIS Certified STEM Approved',
-      batteryRequired: 'None (Solar panel + Hydraulic cylinders included)',
-      inBox: 'Solar cell, Hydraulic cylinders, Gearbox, 140 modular pieces',
-    },
-    svgType: 'robot',
-  },
-  {
-    id: 'anj-rc-04',
-    name: 'Licensed 1:14 Scale McLaren P1 High-Speed RC Car with LED Lights',
-    category: 'Remote Control Toys',
+    id: 'anj-rc-10',
+    name: '1:14 Scale McLaren P1 2.4GHz Supercar with Working LEDs',
+    category: 'RC Supercars & Vehicles',
     categorySlug: 'rc-vehicles',
-    price: 2999,
+    price: 2199,
+    originalPrice: 2899,
+    rating: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1594787318286-3d835c1d207f?auto=format&fit=crop&w=600&q=85',
     age: 'Ages 6+',
     ageBracket: '6-8',
-    occasions: ['birthday', 'collector'],
-    tag: 'Licensed RC',
+    occasions: ['birthday', 'return-gifts'],
+    tag: 'Officially Licensed',
     availability: 'Available in Showroom',
-    description: 'Licensed McLaren aerodynamic replica featuring manual dihedral butterfly doors, LED headlights, independent spring suspension, and 2.4GHz remote.',
+    description: 'High-speed RC supercar with full function forward, reverse, left, right steering, authentic aero curves, and illuminated xenon headlamps.',
     highlights: [
-      'Scale-accurate dihedral butterfly doors that open manually',
-      'Working LED headlights and realistic tail lamps',
-      'Up to 15 km/h speed with responsive steering trim',
-      'Rechargeable battery pack with USB charging cable',
+      'Official automaker styling with butterfly doors',
+      '2.4GHz interference-free transmitter (up to 30m range)',
+      'Front spring shock absorption system',
+      'Includes rechargeable battery pack with USB charging cord',
     ],
     specs: {
-      material: 'Impact-Resistant Composite Body',
-      dimensions: '33cm x 15cm x 8.5cm',
-      certification: 'BIS & WPC Wireless Approved',
-      batteryRequired: 'Car: Rechargeable (included), Remote: 2x AA',
-      inBox: '1:14 RC Supercar, 2.4GHz Controller, USB Fast Charger, Manual',
+      material: 'Impact-Resistant ABS Composite',
+      dimensions: '33cm x 14cm x 8.5cm',
+      certification: 'BIS Certified',
+      batteryRequired: 'Vehicle: Included 4.8V Rechargeable; Remote: 2x AA',
+      inBox: '1 RC Supercar, 1 Transmitter, 1 USB charger, 1 Battery pack',
     },
     svgType: 'rcCar',
   },
+];
+
+/* 4 Curated Gift Baskets directly matching the "Gift kits & baskets" section */
+export const GIFT_BASKETS: GiftBasket[] = [
   {
-    id: 'anj-soft-05',
-    name: 'Heritage Artisan Hand-Stitched Heirloom Teddy Bear (38cm Velvet)',
-    category: 'Soft Toys & Plush',
-    categorySlug: 'soft-toys',
-    price: 1499,
-    age: 'All Ages (0+)',
-    ageBracket: '0-2',
-    occasions: ['birthday', 'return-gifts'],
-    tag: 'Newborn Safe',
-    availability: 'Available in Showroom',
-    description: 'Crafted with soft hypoallergenic plush, embroidered safety eyes, and gentle weighted paws for infant cuddles that last for years.',
-    highlights: [
-      'Baby-safe construction with zero sharp plastic or detachable buttons',
-      'Machine washable on gentle cycle',
-      'Filled with virgin conjugate fiber for bounce and shape',
-      'Includes presentation ribbon for gifting',
+    id: 'basket-him',
+    title: 'For Him / Little Builders',
+    subtitle: 'Hot Wheels, Technic & Speed',
+    itemCount: 6,
+    price: 2499,
+    imageUrl: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=600&q=85',
+    badge: 'Popular',
+    description: 'Action-packed celebration hamper featuring 2 Hot Wheels die-cast mainlines, a motorized mini racer build kit, puzzle cube, and sticker set.',
+    includedItems: [
+      '2x Mattel Hot Wheels Mainline Die-Cast Cars',
+      '1x Pull-Back Technic Mini Racer Build Kit',
+      '1x 3D Speed Cube Brain Teaser',
+      '1x Hot Wheels Collector Sticker Album',
+      '1x Metallic Gift Hamper Box with Satin Ribbon Wrap',
     ],
-    specs: {
-      material: 'Hypoallergenic Velvet Microfiber',
-      dimensions: '38cm sitting height',
-      certification: 'BIS Certified Infant Safe (IS 9873 compliant)',
-      batteryRequired: 'None',
-      inBox: '1 Heirloom Plush Bear with Gift Tag',
-    },
-    svgType: 'teddy',
   },
   {
-    id: 'anj-bg-06',
-    name: 'TerraQuest Strategy Board Game — Deluxe Wooden Edition',
-    category: 'Board Games & Puzzles',
-    categorySlug: 'board-games',
+    id: 'basket-baby',
+    title: 'For Baby & Nursery',
+    subtitle: 'Sensory, Soft & Organic',
+    itemCount: 7,
+    price: 1899,
+    imageUrl: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=600&q=85',
+    badge: 'Newborn Safe',
+    description: 'Tender baby shower and milestone hamper featuring a plush bear, organic cotton crochet rattle, wooden sensory teething blocks, and milestone cards.',
+    includedItems: [
+      '1x Hypoallergenic Snuggle Velvet Plush Bear',
+      '1x Organic Cotton Crochet Bunny Rattle',
+      '2x Natural Beechwood Teething Rings',
+      '1x Soft Cloth Crinkle Book with Animal Sounds',
+      '2x Milestone Memory Photo Discs',
+    ],
+  },
+  {
+    id: 'basket-occasions',
+    title: 'Celebrations & Occasions',
+    subtitle: 'Curated Family Joy',
+    itemCount: 5,
+    price: 2999,
+    imageUrl: 'https://images.unsplash.com/photo-1513885535751-8b9238bd345a?auto=format&fit=crop&w=600&q=85',
+    badge: 'Best Seller',
+    description: 'Deluxe party hamper with a strategy board game, solar science robot, gourmet wooden fidget blocks, and celebratory ribbon presentation.',
+    includedItems: [
+      '1x CuriousMinds 6-in-1 Solar Explorer Lab',
+      '1x Family Fast-Paced Strategy Card Game',
+      '1x Wooden Geometric Tangram Puzzle',
+      '1x Anjrich Keepsake Showroom Greeting Card',
+      '1x Premium Celebration Basket with Gold Bow',
+    ],
+  },
+  {
+    id: 'basket-her',
+    title: 'For Her / Creative Kids',
+    subtitle: 'Art, Charms & Imagination',
+    itemCount: 8,
     price: 2199,
-    age: 'Ages 10+ to Adult',
-    ageBracket: '9-12',
-    occasions: ['birthday', 'learning', 'collector'],
-    tag: 'Family Game',
-    availability: 'Available in Showroom',
-    description: 'Acclaimed civilization trade and resource management strategy game featuring laser-cut wooden hexagonal tiles, custom dice, and linen cards.',
-    highlights: [
-      'Engaging 60-90 minute gameplay for 3-4 players',
-      'High replayability with randomized island setups',
-      'Tactile wooden settlements, roads, and cities',
-      'Complete rulebook and beginner quick-start guide',
+    imageUrl: 'https://images.unsplash.com/photo-1512909006721-3d6018887383?auto=format&fit=crop&w=600&q=85',
+    badge: 'Trending',
+    description: 'Charming creative gift box with DIY bracelet bead maker, pastel plush kitten, sketch journal, watercolor brush pens, and collectible charms.',
+    includedItems: [
+      '1x Soleil Stretchy Ball Bead Jewelry Set (600+ Beads)',
+      '1x Cuddle Velvet Soft Pocket Plush',
+      '1x Hardcover Creative Art & Doodling Diary',
+      '4x Dual-Tip Pastel Watercolor Brush Pens',
+      '1x Iridescent Gift Presentation Box',
     ],
-    specs: {
-      material: 'FSC-Certified Birch Wood & Linen Paperboard',
-      dimensions: '30cm x 30cm x 7cm box',
-      certification: 'BIS Certified Non-Toxic Ink',
-      batteryRequired: 'None',
-      inBox: '19 Terrain Hexes, 96 Resource Cards, 4 Sets of Wooden Pieces, Dice',
-    },
-    svgType: 'boardGame',
-  },
-  {
-    id: 'anj-hw-07',
-    name: 'Hot Wheels Monster Trucks Wrecking Raceway Track Set',
-    category: 'Hot Wheels & Die-Cast',
-    categorySlug: 'hot-wheels',
-    price: 3299,
-    age: 'Ages 4-8',
-    ageBracket: '3-5',
-    occasions: ['birthday', 'collector'],
-    tag: 'Action Track',
-    availability: 'Available in Showroom',
-    description: 'Dual-lane side-by-side race track where trucks smash through obstacles to claim the trophy cup. Features dual gravity slam launchers.',
-    highlights: [
-      'Dual gravity slam-launchers for head-to-head racing',
-      'Includes 1 Monster Truck and 1 Hot Wheels 1:64 die-cast car',
-      'Folds with carrying handle for convenient home storage',
-      'Connects with standard Hot Wheels orange tracks',
-    ],
-    specs: {
-      material: 'Durable Flexible Polypropylene',
-      dimensions: 'Over 1.2 meters track length',
-      certification: 'BIS Certified (IS 9873)',
-      batteryRequired: 'None (Gravity & Slam launcher)',
-      inBox: 'Foldable Raceway, 1 Die-Cast Truck, 1 Car, Trophy Obstacle',
-    },
-    svgType: 'track',
-  },
-  {
-    id: 'anj-build-08',
-    name: 'MagnoCraft 3D Magnetic Geometry Palace Building Set (100 Pieces)',
-    category: 'Building Toys & Blocks',
-    categorySlug: 'building-toys',
-    price: 2150,
-    age: 'Ages 3-9',
-    ageBracket: '3-5',
-    occasions: ['birthday', 'return-gifts', 'learning'],
-    tag: 'Magnetic Tiles',
-    availability: 'Available in Showroom',
-    description: 'Ultrasonic-welded translucent magnetic tiles that snap together firmly from any angle, allowing children to build 3D geometric palaces.',
-    highlights: [
-      'Strong rare-earth neodymium magnets securely encased',
-      'Vibrant jewel-toned translucent colors that reflect light',
-      'Rounded edges prevent scratches or pinched fingers',
-      'Includes illustrated architectural inspiration guide',
-    ],
-    specs: {
-      material: 'Food-Grade Ultrasonic-Sealed ABS',
-      dimensions: 'Standard 7.5cm base tile size',
-      certification: 'BIS Certified Safe for Children',
-      batteryRequired: 'None',
-      inBox: '100 Assorted Magnetic Tiles + Storage Carry Bag',
-    },
-    svgType: 'magnet',
-  },
-  {
-    id: 'anj-stem-09',
-    name: 'Junior Scientist 1200x LED Optical Microscope & 12 Specimen Slides',
-    category: 'Educational & STEM',
-    categorySlug: 'stem-learning',
-    price: 1699,
-    age: 'Ages 8-15',
-    ageBracket: '9-12',
-    occasions: ['birthday', 'learning'],
-    tag: 'Lab Instrument',
-    availability: 'Available in Showroom',
-    description: 'Dual-light compound microscope offering 100x, 400x, and 1200x magnification. Includes optical glass lenses, specimen tools, and prepared slides.',
-    highlights: [
-      '3 Precision optical glass objective lenses: 100x, 400x, 1200x',
-      'Dual LED illumination for transparent and solid specimens',
-      '12 prepared slides (pollen, onion skin, insect wing, etc.)',
-      'Includes blank slides, coverslips, tweezers, and specimen vial',
-    ],
-    specs: {
-      material: 'Sturdy Cast-Metal Arm & Optical Components',
-      dimensions: '22cm x 13cm x 8cm',
-      certification: 'BIS Certified Educational Instrument',
-      batteryRequired: '2x AA batteries for LED illuminator',
-      inBox: 'Microscope, 12 Prepared Slides, 6 Blank Slides, Tools, Manual',
-    },
-    svgType: 'microscope',
   },
 ];
 
+/* Articles for the sidebar */
+export const ARTICLES: Article[] = [
+  {
+    id: 'art-01',
+    title: 'Choosing the Right STEM Kit for Curious Minds',
+    author: 'Anjrich Team',
+    date: 'Oct 24, 2026',
+    summary: 'A parent guide to picking science, robotics, and mechanics toys tailored to developmental age groups without overwhelming your child.',
+    readTime: '3 min read',
+  },
+  {
+    id: 'art-02',
+    title: 'The Hot Wheels Collector Guide: Mainlines vs Car Culture',
+    author: 'Anjrich Team',
+    date: 'Oct 20, 2026',
+    summary: 'Everything you need to know about Real Riders rubber tires, metal bases, treasure hunts, and official drop frequencies in Ambernath.',
+    readTime: '4 min read',
+  },
+];
+
+/* Why Parents Love Us */
 export const WHY_PARENTS_LOVE_US = [
   {
-    title: 'Wide Variety Across Budgets',
-    description: 'From pocket-money Hot Wheels collectibles to heirloom wooden sets and RC cars, finding the right toy fits your family budget.',
+    title: '100% BIS Government Safety Certified',
+    description: 'Every single toy in our Ambernath showroom complies strictly with Bureau of Indian Standards (IS 9873) for non-toxic materials and mechanical safety.',
   },
   {
-    title: 'Carefully Organized Shopping Experience',
-    description: 'Our Ambernath showroom is methodically organized by developmental milestones and interests, so you find suitable options in minutes.',
+    title: 'Authentic Mattel & Top Toy Brands',
+    description: 'Direct partnerships ensure genuine Hot Wheels cases, licensed RC vehicles, and precision-tested building sets without low-grade imitations.',
   },
   {
-    title: 'Ideal for Birthdays & Return Gifts',
-    description: 'Need one special birthday gift or 30 return gifts for a party? We curate balanced packages with complimentary custom gift wrapping.',
+    title: 'Complimentary In-Store Gift Wrapping',
+    description: 'Every purchase includes high-grade celebration wrapping paper, elegant satin ribbons, and personalized handwritten gift cards at zero extra charge.',
   },
   {
-    title: 'Official Hot Wheels Collector Stockist',
-    description: 'Collectors and enthusiasts count on us for genuine Mattel deliveries, Car Culture premiums, and track expansions.',
+    title: 'Try Before You Buy in Showroom',
+    description: 'Our friendly staff unboxes and demonstrates RC cars, board games, and STEM kits so parents know exactly what their children are bringing home.',
   },
   {
-    title: 'Attentive Local Service',
-    description: 'We test toys with you, explain battery requirements, and offer genuine guidance with a smile. If an item is needed, we source it via our network.',
+    title: 'Hassle-Free Same Day WhatsApp Reservation',
+    description: 'Reserve high-demand Hot Wheels drops and birthday presents with one WhatsApp tap for same-day store pickup at your convenience.',
   },
 ];
 
-export const REVIEWS = [
-  {
-    name: 'Rohit Deshmukh',
-    role: 'Parent & Collector',
-    area: 'Ambernath East',
-    rating: 5,
-    date: 'Recent visit',
-    text: 'Best place in Ambernath for authentic Hot Wheels! The owner understands collector castings and never jacks up prices like online resellers. Clean, well-lit, and well-organized shop.',
-  },
-  {
-    name: 'Pooja Sawant',
-    role: 'Parent of two',
-    area: 'Kalyan-Ambernath Link Rd',
-    rating: 5,
-    date: '1 month ago',
-    text: 'Got return gifts for my son’s 6th birthday party here. The staff helped me curate STEM building kits within our ₹400 budget and wrapped all 25 gifts with personalized ribbons for free. Saved me days of stress!',
-  },
-  {
-    name: 'Vikramaditya Nair',
-    role: 'Local Resident',
-    area: 'Shiv Mandir Area, Ambernath',
-    rating: 5,
-    date: 'Recent visit',
-    text: 'Unmatched customer service. It genuinely feels like visiting an upscale toy showroom right here in our town. Excellent variety of wooden brain teasers and Technic sets.',
-  },
-  {
-    name: 'Dr. Sneha Kulkarni',
-    role: 'Parent & Pediatrician',
-    area: 'Ambernath West',
-    rating: 5,
-    date: 'Recent visit',
-    text: 'I appreciate their strict adherence to BIS safety standards and non-toxic materials. You will not find cheap breakable plastic here. My daughter loves the microscope kit we bought.',
-  },
-];
-
+/* FAQs */
 export const FAQS = [
   {
     q: 'Do you offer gift wrapping for purchases?',
@@ -404,12 +564,6 @@ export const FAQS = [
     a: 'Yes! Share your guest count, age range, and budget per child. We curate age-appropriate, BIS-certified gift sets with complimentary individual wrapping and name tags.',
   },
 ];
-
-export interface GalleryItem {
-  title: string;
-  category: string;
-  description: string;
-}
 
 export const GALLERY_ITEMS: GalleryItem[] = [
   {
@@ -441,6 +595,45 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     title: 'Bespoke Gift Wrapping Station',
     category: 'Wrapping & Custom Hampers',
     description: 'Complimentary celebration wrap paper with satin ribbon ties and custom birthday message cards for every purchase.',
+  },
+];
+
+export interface Review {
+  name: string;
+  area: string;
+  rating: number;
+  date: string;
+  text: string;
+}
+
+export const REVIEWS: Review[] = [
+  {
+    name: 'Pooja Sharma',
+    area: 'Ambernath East',
+    rating: 5,
+    date: '2 weeks ago',
+    text: 'Best toy store in Ambernath! The staff personally helped me choose a birthday gift for my 6-year-old nephew. They even wrapped it with gorgeous ribbons for free.',
+  },
+  {
+    name: 'Vikram Joshi',
+    area: 'Shiv Mandir Road',
+    rating: 5,
+    date: '1 month ago',
+    text: 'A paradise for Hot Wheels collectors. Genuine Mattel stock, clean display cases, and fair pricing without artificial markups. Will visit again!',
+  },
+  {
+    name: 'Sneha Deshmukh',
+    area: 'Near Ambernath Station',
+    rating: 5,
+    date: '3 weeks ago',
+    text: 'So relieved to find 100% BIS certified toys. The STEM robotics kit we bought kept my daughter engaged for hours. Excellent in-person guidance.',
+  },
+  {
+    name: 'Amit Patel',
+    area: 'Badlapur West',
+    rating: 5,
+    date: 'Last month',
+    text: 'Reserved 15 return gift sets over WhatsApp for my son’s party. Everything was packed, labeled, and ready for pickup on time. Great service!',
   },
 ];
 

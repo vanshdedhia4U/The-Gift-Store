@@ -3,38 +3,57 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Navbar } from './components/Navbar';
-import { HeroSection } from './components/HeroSection';
-import { FeaturedCategories } from './components/FeaturedCategories';
-import { FeaturedProducts } from './components/FeaturedProducts';
-import { BirthdayGiftSection } from './components/BirthdayGiftSection';
+import { Sidebar } from './components/Sidebar';
+import { MainHeroSection } from './components/MainHeroSection';
+import { FeaturedItemsSection } from './components/FeaturedItemsSection';
+import { SecondaryBanners } from './components/SecondaryBanners';
+import { GiftBasketsSection } from './components/GiftBasketsSection';
 import { StoreStory } from './components/StoreStory';
-import { GoogleReviewsSection } from './components/GoogleReviewsSection';
 import { VisitOurStore } from './components/VisitOurStore';
 import { FAQSection } from './components/FAQSection';
 import { Footer } from './components/Footer';
 import { QuickViewModal } from './components/QuickViewModal';
+import { GiftBasketModal } from './components/GiftBasketModal';
+import { ArticleModal } from './components/ArticleModal';
 import { EnquiryBagDrawer, EnquiryItem } from './components/EnquiryBagDrawer';
 import { SearchModal } from './components/SearchModal';
 import { GalleryLightbox } from './components/GalleryLightbox';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
-import { PRODUCTS, Product } from './data/storeData';
+import {
+  PRODUCTS,
+  Product,
+  GIFT_BASKETS,
+  GiftBasket,
+  Article,
+} from './data/storeData';
 
 export default function App() {
   const [enquiryItems, setEnquiryItems] = useState<EnquiryItem[]>([
     {
-      product: PRODUCTS[0], // Hot Wheels Car Culture Set
+      product: PRODUCTS[0], // Hallmark Stuffed Snoopy Cuddle Companion Plush
+      quantity: 1,
+    },
+    {
+      product: PRODUCTS[5], // Hot Wheels Premium Car Culture Real Riders
       quantity: 1,
     },
   ]);
   const [isBagOpen, setIsBagOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [selectedBasket, setSelectedBasket] = useState<GiftBasket | null>(null);
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [selectedCategorySlug, setSelectedCategorySlug] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [justAddedId, setJustAddedId] = useState<string | null>(null);
 
   const totalEnquiryCount = enquiryItems.reduce((acc, item) => acc + item.quantity, 0);
+  const totalAmount = enquiryItems.reduce(
+    (acc, item) => acc + item.product.price * item.quantity,
+    0
+  );
 
   const handleAddToEnquiryBag = (product: Product) => {
     setEnquiryItems((prev) => {
@@ -48,6 +67,34 @@ export default function App() {
       }
       return [...prev, { product, quantity: 1 }];
     });
+
+    setJustAddedId(product.id);
+    setTimeout(() => setJustAddedId(null), 1800);
+  };
+
+  const handleAddBasketToBag = (basket: GiftBasket) => {
+    // Create an ad-hoc product representation for the reservation list
+    const basketProduct: Product = {
+      id: `basket-${basket.id}`,
+      name: `${basket.title} Hamper (${basket.itemCount} Items)`,
+      category: 'Curated Gift Hamper',
+      categorySlug: 'return-gifts',
+      price: basket.price,
+      imageUrl: basket.imageUrl,
+      age: 'All Ages',
+      ageBracket: '6-8',
+      occasions: ['birthday', 'return-gifts'],
+      availability: 'Custom Showroom Curation',
+      description: basket.description,
+      highlights: basket.includedItems,
+      specs: {
+        material: 'Assorted Curated Toys & Gift Box Packaging',
+        certification: 'BIS Certified (IS 9873 compliant)',
+        inBox: `${basket.itemCount} Curated items with celebration box & satin ribbon`,
+      },
+      svgType: 'teddy',
+    };
+    handleAddToEnquiryBag(basketProduct);
   };
 
   const handleUpdateQuantity = (productId: string, delta: number) => {
@@ -79,67 +126,116 @@ export default function App() {
     }
   };
 
+  // Filter products by category or price
+  const filteredProducts = useMemo(() => {
+    if (selectedCategory === 'all') {
+      return PRODUCTS;
+    }
+    if (selectedCategory === 'under-499') {
+      return PRODUCTS.filter((p) => p.price <= 500);
+    }
+    return PRODUCTS.filter((p) => p.categorySlug === selectedCategory);
+  }, [selectedCategory]);
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF9F6] text-[#202321] selection:bg-[#E98552]/20 selection:text-[#233B63]">
-      {/* 1 & 2. Minimal Announcement Bar + Refined Sticky Navbar */}
+    <div className="min-h-screen flex flex-col bg-[#FAF9F7] text-[#202321] selection:bg-[#E98552]/20 selection:text-[#233B63]">
+      {/* 1. Header (Top Utility Bar + Brand Highlights + Nav with Active Pill) */}
       <Navbar
         onOpenSearch={() => setIsSearchOpen(true)}
         onOpenEnquiryBag={() => setIsBagOpen(true)}
         enquiryCount={totalEnquiryCount}
+        totalAmount={totalAmount}
+        onSelectCategory={(slug) => {
+          setSelectedCategory(slug);
+          scrollToSection('featured-items');
+        }}
+        selectedCategory={selectedCategory}
+        onOpenShowroomPhoto={() => setLightboxIndex(0)}
       />
 
-      <main className="flex-1">
-        {/* 3. Photography-led Hero Section with "Little Things. Big Adventures." */}
-        <HeroSection
-          onExploreClick={() => scrollToSection('products')}
-          onVisitClick={() => scrollToSection('visit-store')}
-        />
+      {/* 2. Main Page Layout: Two-Column Composition matching screenshot */}
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
+          {/* Left Column: Sidebar with categories, 3 trust badges, promo, articles, and testimonial */}
+          <Sidebar
+            selectedCategory={selectedCategory}
+            onSelectCategory={(slug) => {
+              setSelectedCategory(slug);
+              scrollToSection('featured-items');
+            }}
+            onOpenArticle={(article) => setSelectedArticle(article)}
+            onExploreTopPicks={() => {
+              setSelectedCategory('hot-wheels');
+              scrollToSection('featured-items');
+            }}
+          />
 
-        {/* 4. Shop-by-Category Section */}
-        <FeaturedCategories
-          onSelectCategory={(slug) => {
-            setSelectedCategorySlug(slug);
-            scrollToSection('products');
-          }}
-        />
+          {/* Right Column: Main Content Area */}
+          <div className="flex-1 min-w-0 space-y-10">
+            {/* Top Flatlay Hero Banner with Center Floating Box & Dual Promos */}
+            <MainHeroSection
+              onExploreClick={() => scrollToSection('featured-items')}
+              onSaleClick={() => {
+                setSelectedCategory('return-gifts');
+                scrollToSection('featured-items');
+              }}
+            />
 
-        {/* 5. Featured Products with Price Sorting & Category Filtering */}
-        <FeaturedProducts
-          selectedCategorySlug={selectedCategorySlug}
-          onSelectCategory={setSelectedCategorySlug}
-          onQuickView={(p) => setQuickViewProduct(p)}
-          onAddToEnquiryBag={handleAddToEnquiryBag}
-        />
+            {/* "Feature items" Section: 4x2 Grid of 8 toys with cursive title */}
+            <FeaturedItemsSection
+              products={filteredProducts}
+              onSelectProduct={(p) => setQuickViewProduct(p)}
+              onAddToBag={handleAddToEnquiryBag}
+              addedProductId={justAddedId}
+            />
 
-        {/* 6. Useful Gift-Discovery Section */}
-        <BirthdayGiftSection
-          onQuickView={(p) => setQuickViewProduct(p)}
-          onAddToEnquiryBag={handleAddToEnquiryBag}
-        />
+            {/* Secondary Dual Promos: Gifts Under ₹499 & 30% Off Family Games */}
+            <SecondaryBanners
+              onShopUnder499={() => {
+                setSelectedCategory('under-499');
+                scrollToSection('featured-items');
+              }}
+              onShopGames={() => {
+                setSelectedCategory('board-games');
+                scrollToSection('featured-items');
+              }}
+            />
 
-        {/* 7. Authentic Store Photography & Brand Introduction */}
-        <StoreStory
-          onOpenShowroomPhoto={() => setLightboxIndex(0)}
-        />
+            {/* "Gift kits & baskets" Section: 4 Curated Baskets with cursive title */}
+            <GiftBasketsSection
+              baskets={GIFT_BASKETS}
+              onSelectBasket={(b) => setSelectedBasket(b)}
+            />
+          </div>
+        </div>
 
-        {/* 8. Verified Customer Reviews */}
-        <GoogleReviewsSection />
-
-        {/* 9. Store Location, Directions, Contact and Opening Hours */}
-        <VisitOurStore />
-
-        {/* Functional FAQ Accordion */}
-        <FAQSection />
+        {/* Store Information, Story & Hours below the main grid */}
+        <div className="mt-16 pt-12 border-t border-[#ECEAE4] space-y-12">
+          <StoreStory onOpenShowroomPhoto={() => setLightboxIndex(0)} />
+          <VisitOurStore />
+          <FAQSection />
+        </div>
       </main>
 
-      {/* 10. Clean, Informative Footer */}
-      <Footer />
+      {/* 3. Footer (4 Columns: Store, Information, Services, Newsletter + Social & Top) */}
+      <Footer onOpenShowroomPhoto={() => setLightboxIndex(0)} />
 
-      {/* Functional Interactive Modals & Drawers */}
+      {/* 4. Interactive Modals & Drawers */}
       <QuickViewModal
         product={quickViewProduct}
         onClose={() => setQuickViewProduct(null)}
         onAddToEnquiryBag={handleAddToEnquiryBag}
+      />
+
+      <GiftBasketModal
+        basket={selectedBasket}
+        onClose={() => setSelectedBasket(null)}
+        onAddToBag={handleAddBasketToBag}
+      />
+
+      <ArticleModal
+        article={selectedArticle}
+        onClose={() => setSelectedArticle(null)}
       />
 
       <EnquiryBagDrawer

@@ -59,7 +59,7 @@ export const GoogleReviewsSection: React.FC = () => {
                 <div className="w-8 h-8 rounded-full bg-[#FAF9F6] border border-[#E8E5DF] text-[#233B63] font-bold text-xs flex items-center justify-center shrink-0">
                   {review.name
                     .split(' ')
-                    .map((n) => n[0])
+                    .map((n: string) => n[0])
                     .join('')}
                 </div>
                 <div className="min-w-0">

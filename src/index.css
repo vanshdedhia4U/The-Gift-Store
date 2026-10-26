@@ -3,12 +3,19 @@
 @theme {
   --font-heading: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-script: 'Dancing Script', 'Alex Brush', cursive;
   
   --color-warm-ivory: #FAF9F6;
   --color-charcoal: #202321;
   --color-deep-navy: #233B63;
   --color-soft-orange: #E98552;
   --color-warm-grey: #E8E5DF;
+  --color-pastel-rose: #FCE8E6;
+  --color-soft-peach: #FFF0EB;
+}
+
+.font-script {
+  font-family: 'Dancing Script', 'Alex Brush', cursive;
 }
 
 @layer base {

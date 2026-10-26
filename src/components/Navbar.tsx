@@ -1,176 +1,322 @@
-import React, { useState, useEffect } from 'react';
-import { Search, ShoppingBag, MessageCircle, Phone, Menu, X, Clock, MapPin } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, ShoppingBag, Phone, Menu, X, Gift, Headphones, MapPin, ChevronDown } from 'lucide-react';
 
 interface NavbarProps {
   onOpenSearch: () => void;
   onOpenEnquiryBag: () => void;
   enquiryCount: number;
+  totalAmount: number;
+  onSelectCategory?: (slug: string) => void;
+  selectedCategory?: string;
+  onOpenShowroomPhoto?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch, onOpenEnquiryBag, enquiryCount }) => {
-  const [isScrolled, setIsScrolled] = useState(false);
+export const Navbar: React.FC<NavbarProps> = ({
+  onOpenSearch,
+  onOpenEnquiryBag,
+  enquiryCount,
+  totalAmount,
+  onSelectCategory,
+  selectedCategory = 'all',
+}) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [shopDropdownOpen, setShopDropdownOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const navLinks = [
-    { name: 'Catalogue', href: '#products' },
-    { name: 'Categories', href: '#categories' },
-    { name: 'Gift Finder', href: '#gift-discovery' },
-    { name: 'Store Story', href: '#about-store' },
-    { name: 'Reviews', href: '#reviews' },
-    { name: 'Visit & Hours', href: '#visit-store' },
-  ];
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onOpenSearch();
+  };
 
   return (
-    <>
-      {/* 1. Minimal Announcement Bar (Verified Real Store Timings & Perks) */}
-      <div className="bg-[#202321] text-[#FAF9F6] text-[11px] sm:text-xs py-2 px-4 border-b border-[#202321]/10">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 truncate">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#E98552] shrink-0" />
-            <span className="font-medium text-[#E8E5DF] truncate">
-              Silver Arch Complex, Ambernath East · Open 7 Days: 10:00 AM – 9:30 PM
+    <header className="w-full bg-white border-b border-[#ECEAE4] text-[#202321] text-xs">
+      {/* 1. Top Utility Header (matching screenshot top bar) */}
+      <div className="border-b border-[#F0EFEB] bg-[#FAF9F7] py-2 px-4 text-[#6B7280]">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-[11px]">
+          {/* Left info: Location & Language */}
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1 hover:text-[#202321] transition-colors">
+              <MapPin className="w-3 h-3 text-[#E98552]" />
+              <span>Shop 4 & 5, Silver Arch, Ambernath East</span>
+            </span>
+            <span className="hidden sm:inline text-[#D1CECA]">|</span>
+            <span className="hidden sm:flex items-center gap-1 text-[#4B5563]">
+              <span>English · INR (₹)</span>
             </span>
           </div>
-          <div className="hidden md:flex items-center gap-4 text-[#E8E5DF] shrink-0 font-medium">
-            <span>Complimentary In-Store Gift Wrapping</span>
-            <span className="text-[#E8E5DF]/40">|</span>
-            <a href="tel:+919823124567" className="hover:text-white transition-colors flex items-center gap-1">
-              <Phone className="w-3 h-3 text-[#E98552]" />
-              <span>+91 98231 24567</span>
-            </a>
+
+          {/* Right info: Sign In, About, Track, FAQ */}
+          <div className="flex items-center gap-3 sm:gap-5 text-[#6B7280]">
+            <a href="#about-store" className="hover:text-[#202321] transition-colors">Sign In / Register</a>
+            <span className="text-[#D1CECA]">·</span>
+            <a href="#about-store" className="hover:text-[#202321] transition-colors">About Us</a>
+            <span className="text-[#D1CECA]">·</span>
+            <a href="#faqs" className="hover:text-[#202321] transition-colors">FAQ & Timings</a>
           </div>
         </div>
       </div>
 
-      {/* 2. Refined Sticky Navbar */}
-      <header
-        className={`sticky top-0 z-40 transition-all duration-200 ${
-          isScrolled
-            ? 'bg-[#FAF9F6]/95 backdrop-blur-md shadow-xs border-b border-[#E8E5DF]'
-            : 'bg-[#FAF9F6] border-b border-[#E8E5DF]/70'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-6 h-18">
-            {/* Zone 1: Brand Wordmark */}
-            <a href="#home" className="flex flex-col group shrink-0">
-              <span className="text-xl sm:text-2xl font-bold tracking-tight text-[#202321] font-heading group-hover:text-[#233B63] transition-colors leading-none">
-                ANJRICH<span className="text-[#E98552]">.</span>
-              </span>
-              <span className="text-[10px] tracking-widest uppercase font-medium text-[#6B7280] mt-1">
-                The Toy Store · Ambernath
-              </span>
-            </a>
+      {/* 2. Middle Brand & Value Highlights Bar (matching screenshot brand row) */}
+      <div className="py-4 sm:py-5 px-4 max-w-7xl mx-auto">
+        <div className="flex items-center justify-between gap-4">
+          {/* Logo (matching 'gifymo' style typography from mockup) */}
+          <a href="#home" className="flex items-baseline gap-1 group">
+            <span className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#202321] lowercase font-heading">
+              anjrich<span className="inline-block w-2 h-2 rounded-full bg-[#E98552] ml-0.5"></span>
+            </span>
+            <span className="hidden md:inline-block text-[9px] uppercase tracking-widest text-[#9CA3AF] font-bold ml-1.5 self-center">
+              The Toy Store
+            </span>
+          </a>
 
-            {/* Zone 2: Navigation Links */}
-            <nav className="hidden lg:flex items-center gap-7 text-xs sm:text-sm font-medium text-[#202321]/80">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className="hover:text-[#233B63] transition-colors whitespace-nowrap py-1 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#E98552] after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
-                >
-                  {link.name}
-                </a>
-              ))}
-            </nav>
+          {/* Center feature 1: Free Gift Wrapping */}
+          <div className="hidden lg:flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-[#FFF0EB] flex items-center justify-center text-[#E98552] shrink-0">
+              <Gift className="w-4.5 h-4.5" />
+            </div>
+            <div>
+              <p className="text-[11px] font-bold text-[#202321] leading-tight">Free Gift Wrapping</p>
+              <p className="text-[10px] text-[#6B7280]">on all purchases & celebration boxes</p>
+            </div>
+          </div>
 
-            {/* Zone 3: Actions */}
-            <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
-              {/* Search Trigger */}
-              <button
-                onClick={onOpenSearch}
-                className="p-2 text-[#202321]/80 hover:text-[#202321] hover:bg-[#E8E5DF]/50 rounded-lg transition-colors cursor-pointer"
-                title="Search toys by brand, age, or category"
-                aria-label="Search toys"
-              >
-                <Search className="w-4.5 h-4.5" />
-              </button>
-
-              {/* WhatsApp Quick Link */}
-              <a
-                href="https://wa.me/919823124567?text=Hello%20Anjrich%20The%20Toy%20Store!%20I'd%20like%20to%20inquire%20about%20toy%20availability%20at%20your%20Ambernath%20store."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#202321] bg-white border border-[#E8E5DF] hover:border-[#233B63] rounded-lg transition-colors"
-              >
-                <MessageCircle className="w-3.5 h-3.5 text-[#25D366]" />
-                <span>WhatsApp</span>
+          {/* Center feature 2: Support / Contact */}
+          <div className="hidden md:flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-[#EBF0F8] flex items-center justify-center text-[#233B63] shrink-0">
+              <Headphones className="w-4.5 h-4.5" />
+            </div>
+            <div>
+              <p className="text-[10px] text-[#6B7280]">support@anjrichtoys.com</p>
+              <a href="tel:+919823124567" className="text-xs font-bold text-[#202321] hover:text-[#233B63] leading-tight block">
+                +91 98231 24567
               </a>
+            </div>
+          </div>
 
-              {/* In-Store Enquiry Bag */}
-              <button
-                onClick={onOpenEnquiryBag}
-                className="relative inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#233B63] hover:bg-[#1C2F4F] text-white text-xs font-semibold transition-colors cursor-pointer shadow-xs"
-                aria-label="View In-Store Reservation Bag"
-              >
-                <ShoppingBag className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Reserve Bag</span>
+          {/* Right feature: Cart / Reservation Bag */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={onOpenEnquiryBag}
+              className="flex items-center gap-3 p-2 sm:px-3 sm:py-2 rounded-lg hover:bg-[#FAF9F7] border border-[#ECEAE4] transition-all cursor-pointer group"
+              aria-label="View Reservation Bag"
+            >
+              <div className="relative text-[#202321]">
+                <ShoppingBag className="w-5 h-5 group-hover:text-[#233B63] transition-colors" />
                 {enquiryCount > 0 && (
-                  <span className="w-4.5 h-4.5 rounded-full bg-[#E98552] text-white text-[10px] font-bold flex items-center justify-center tabular-nums">
+                  <span className="absolute -top-1.5 -right-2 bg-[#E98552] text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                     {enquiryCount}
                   </span>
                 )}
-              </button>
+              </div>
+              <div className="hidden sm:block text-left">
+                <p className="text-[10px] text-[#6B7280] leading-tight">Cart: {enquiryCount} items</p>
+                <p className="text-xs font-bold text-[#202321]">₹{totalAmount.toLocaleString('en-IN')}</p>
+              </div>
+            </button>
 
-              {/* Mobile Menu Toggle */}
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 text-[#202321] rounded-lg hover:bg-[#E8E5DF]/50 transition-colors cursor-pointer"
-                aria-label="Toggle navigation menu"
-              >
-                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
-            </div>
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden p-2 text-[#202321] rounded-lg border border-[#ECEAE4]"
+              aria-label="Toggle Navigation"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
+      </div>
 
-        {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden bg-[#FAF9F6] border-b border-[#E8E5DF] px-4 pt-3 pb-6 space-y-4 shadow-md animate-in slide-in-from-top-2 duration-150">
-            <nav className="flex flex-col space-y-1">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-3 py-2.5 rounded-lg text-sm font-medium text-[#202321] hover:bg-white hover:text-[#233B63] transition-colors"
-                >
-                  {link.name}
-                </a>
-              ))}
-            </nav>
+      {/* 3. Bottom Horizontal Navigation Bar with Active Pill & Search */}
+      <div className="border-t border-[#ECEAE4] bg-white">
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between gap-4 h-12">
+          {/* Nav Links (HOME has soft peach/salmon background pill exactly like mockup!) */}
+          <nav className="hidden lg:flex items-center gap-2">
+            <a
+              href="#home"
+              className="px-3.5 py-1.5 rounded-sm bg-[#FCE8E6] text-[#202321] font-semibold text-xs tracking-wider uppercase transition-colors"
+            >
+              HOME
+            </a>
 
-            <div className="pt-3 border-t border-[#E8E5DF] flex flex-col gap-2">
-              <a
-                href="https://wa.me/919823124567?text=Hello%20Anjrich%20The%20Toy%20Store!%20I'm%20browsing%20your%20website."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 py-2.5 px-4 bg-[#25D366] text-white rounded-lg text-xs font-semibold"
+            {/* SHOP dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setShopDropdownOpen(!shopDropdownOpen)}
+                className="px-3 py-1.5 text-xs font-semibold text-[#4B5563] hover:text-[#202321] tracking-wider uppercase flex items-center gap-1 transition-colors cursor-pointer"
               >
-                <MessageCircle className="w-4 h-4" />
-                <span>Chat on WhatsApp (+91 98231 24567)</span>
-              </a>
+                <span>SHOP</span>
+                <ChevronDown className="w-3 h-3 text-[#9CA3AF]" />
+              </button>
 
-              <a
-                href="tel:+919823124567"
-                className="flex items-center justify-center gap-2 py-2.5 px-4 bg-white border border-[#E8E5DF] text-[#202321] rounded-lg text-xs font-medium"
-              >
-                <Phone className="w-4 h-4 text-[#E98552]" />
-                <span>Call Ambernath Showroom</span>
-              </a>
+              {shopDropdownOpen && (
+                <div className="absolute left-0 top-full mt-1 w-56 bg-white border border-[#E8E5DF] rounded-lg shadow-lg py-2 z-50 animate-in fade-in duration-100">
+                  <button
+                    onClick={() => {
+                      onSelectCategory?.('all');
+                      setShopDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-2 text-xs hover:bg-[#FAF9F7] text-[#202321] font-medium"
+                  >
+                    All Collections
+                  </button>
+                  <button
+                    onClick={() => {
+                      onSelectCategory?.('hot-wheels');
+                      setShopDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-2 text-xs hover:bg-[#FAF9F7] text-[#202321]"
+                  >
+                    Hot Wheels & Die-Cast
+                  </button>
+                  <button
+                    onClick={() => {
+                      onSelectCategory?.('building-toys');
+                      setShopDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-2 text-xs hover:bg-[#FAF9F7] text-[#202321]"
+                  >
+                    Building Bricks & Technic
+                  </button>
+                  <button
+                    onClick={() => {
+                      onSelectCategory?.('stem-learning');
+                      setShopDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-2 text-xs hover:bg-[#FAF9F7] text-[#202321]"
+                  >
+                    STEM & Robotics
+                  </button>
+                  <button
+                    onClick={() => {
+                      onSelectCategory?.('soft-toys');
+                      setShopDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-2 text-xs hover:bg-[#FAF9F7] text-[#202321]"
+                  >
+                    Soft Toys & Plush
+                  </button>
+                  <button
+                    onClick={() => {
+                      onSelectCategory?.('board-games');
+                      setShopDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-2 text-xs hover:bg-[#FAF9F7] text-[#202321]"
+                  >
+                    Board Games & Puzzles
+                  </button>
+                </div>
+              )}
             </div>
+
+            <a
+              href="#featured-items"
+              className="px-3 py-1.5 text-xs font-semibold text-[#4B5563] hover:text-[#202321] tracking-wider uppercase transition-colors"
+            >
+              FEATURED TOYS
+            </a>
+
+            <a
+              href="#gift-baskets"
+              className="px-3 py-1.5 text-xs font-semibold text-[#4B5563] hover:text-[#202321] tracking-wider uppercase transition-colors"
+            >
+              GIFT BASKETS
+            </a>
+
+            <a
+              href="#about-store"
+              className="px-3 py-1.5 text-xs font-semibold text-[#4B5563] hover:text-[#202321] tracking-wider uppercase transition-colors"
+            >
+              OUR STORY
+            </a>
+
+            <a
+              href="#articles"
+              className="px-3 py-1.5 text-xs font-semibold text-[#4B5563] hover:text-[#202321] tracking-wider uppercase transition-colors"
+            >
+              BLOG
+            </a>
+
+            <a
+              href="#visit-store"
+              className="px-3 py-1.5 text-xs font-semibold text-[#4B5563] hover:text-[#202321] tracking-wider uppercase transition-colors"
+            >
+              CONTACT
+            </a>
+          </nav>
+
+          {/* Right: Search box in nav (matching screenshot search pill) */}
+          <form onSubmit={handleSearchSubmit} className="relative flex items-center w-full lg:w-60">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              onClick={onOpenSearch}
+              className="w-full py-1.5 pl-3 pr-8 text-xs text-[#202321] placeholder-[#9CA3AF] bg-[#FAF9F7] border border-[#ECEAE4] rounded-full focus:outline-none focus:border-[#202321] transition-colors"
+            />
+            <button
+              type="submit"
+              className="absolute right-2.5 text-[#9CA3AF] hover:text-[#202321] transition-colors cursor-pointer"
+              aria-label="Search"
+            >
+              <Search className="w-3.5 h-3.5" />
+            </button>
+          </form>
+        </div>
+      </div>
+
+      {/* Mobile Menu Drawer */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-white border-b border-[#ECEAE4] px-4 py-4 space-y-3 shadow-md animate-in slide-in-from-top-2 duration-150">
+          <div className="flex flex-col space-y-1">
+            <a
+              href="#home"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 rounded bg-[#FCE8E6] text-xs font-bold text-[#202321]"
+            >
+              HOME
+            </a>
+            <a
+              href="#featured-items"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 text-xs font-semibold text-[#4B5563] hover:bg-[#FAF9F7]"
+            >
+              SHOP FEATURED TOYS
+            </a>
+            <a
+              href="#gift-baskets"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 text-xs font-semibold text-[#4B5563] hover:bg-[#FAF9F7]"
+            >
+              GIFT KITS & BASKETS
+            </a>
+            <a
+              href="#about-store"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 text-xs font-semibold text-[#4B5563] hover:bg-[#FAF9F7]"
+            >
+              OUR STORY
+            </a>
+            <a
+              href="#visit-store"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 text-xs font-semibold text-[#4B5563] hover:bg-[#FAF9F7]"
+            >
+              CONTACT & HOURS
+            </a>
           </div>
-        )}
-      </header>
-    </>
+
+          <div className="pt-3 border-t border-[#ECEAE4] flex flex-col gap-2">
+            <a
+              href="tel:+919823124567"
+              className="flex items-center gap-2 text-xs font-semibold text-[#202321] p-2 rounded bg-[#FAF9F7]"
+            >
+              <Phone className="w-4 h-4 text-[#E98552]" />
+              <span>Call Showroom: +91 98231 24567</span>
+            </a>
+          </div>
+        </div>
+      )}
+    </header>
   );
 };

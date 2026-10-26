@@ -26,7 +26,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
 
   if (!product) return null;
 
-  const photoUrl = PRODUCT_PHOTOS[product.id];
+  const photoUrl = product.imageUrl || PRODUCT_PHOTOS[product.id];
 
   const handleWhatsAppInquiry = () => {
     const message = encodeURIComponent(
